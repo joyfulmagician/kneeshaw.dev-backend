@@ -1,5 +1,13 @@
 {
-    "cSpell.words": [
-        "kneeshaw"
-    ]
+  "cSpell.words": ["kneeshaw", "Parens"],
+  "prettier.configPath": ".prettierrc.json",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.format": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.tabSize": 2
 }
