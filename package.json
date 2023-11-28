@@ -2,9 +2,10 @@
   "name": "kneeshaw.dev-backend",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node-dev ./src/server.ts"
   },
   "author": "",
   "license": "ISC",
@@ -33,6 +34,7 @@
     "@types/node": "^20.10.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.2"
   }
 }

@@ -1,14 +1,15 @@
 require('dotenv').config({path:'../.env'});
 
-import express from "express";
+import express, {Application} from "express";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import {json} from 'body-parser'
 import mongoose from 'mongoose'
 import { connectDB } from "./config/db.config";
+import routes from "./routes"
 
-const app= express();
+const app: Application = express();
 
 // Cors configuration
 const corsOptions = {
