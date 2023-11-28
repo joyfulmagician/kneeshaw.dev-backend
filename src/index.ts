@@ -1,13 +1,11 @@
 import express, { Application } from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser";
-import morgan from "morgan";
-import { json } from "body-parser";
-import mongoose from "mongoose";
-import { connectDB } from "./config/db.config";
-import routes from "./routes";
+import dotenv from "dotenv";
 
-require("dotenv").config({ path: "../.env" });
+import routes from "./routes";
+import connectDB from "./services/db.service";
+
+dotenv.config();
 
 const app: Application = express();
 
@@ -24,23 +22,23 @@ app.use(express.urlencoded({ extended: true }));
 // Use routes
 app.use(routes);
 
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Connect to database
+connectDB()
+  .then(() => {
+    console.info("Database connected successfully.");
+
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.info(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error: Error) => {
+    console.error("Database connection failed. error: ", error);
+    process.exit();
+  });
+
+// Error handler
+process.on("unhandledRejection", (error) => {
+  console.error(`Logged Error: ${error}`);
+  process.exit(1);
 });
-
-process.on("unhandledRejection", (error, promise) => {
-  console.log(`Logged Error: ${error}`);
-  server.close(() => process.exit(1));
-});
-
-const errorHandler = require("./middleware/error");
-
-// connect to db
-connectDB();
-
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/private", require("./routes/private"));
-
-// ErrorHandler (Should be last piece of middleware)
-app.use(errorHandler);
