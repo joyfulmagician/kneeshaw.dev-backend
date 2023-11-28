@@ -1,6 +1,6 @@
-import express, { Application } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import express, { Application } from "express";
 
 import routes from "./routes";
 import connectDB from "./services/db.service";
@@ -39,6 +39,6 @@ connectDB()
 
 // Error handler
 process.on("unhandledRejection", (error) => {
-  console.error(`Logged Error: ${error}`);
+  console.error("Unknown error occurred: ", error);
   process.exit(1);
 });
