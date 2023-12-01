@@ -29,6 +29,8 @@
     "dev": "ts-node-dev ./src/index.ts",
     "start": "nodemon ./dist/index.js",
     "build": "tsc",
+    "seed-dev": "ts-node-dev ./src/seeders/index.ts",
+    "seed-prod": "node ./dist/seeders/index.js",
     "prettier-fix": "prettier --write src/**/*.ts",
     "lint": "eslint src/**/*.ts",
     "lint-fix": "eslint src/**/*.ts --fix"
