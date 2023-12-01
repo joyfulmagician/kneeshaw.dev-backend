@@ -1,4 +1,5 @@
 import { Document, model, Model, Schema } from "mongoose";
+import { compareSync, genSaltSync, hashSync } from "bcryptjs";
 
 interface IUser {
   email: string;
@@ -56,6 +57,32 @@ const UserSchema: Schema = new Schema(
   {
     timestamps: true,
     collection: "users"
+  }
+);
+
+UserSchema.pre<UserDocument>(
+  "save",
+  function preSave(this: UserDocument, next) {
+    if (!this.isModified("password")) {
+      next();
+    }
+
+    const salt = genSaltSync(Number(process.env.BCRYPT_SALT) ?? 10);
+    this.password = hashSync(this.password, salt);
+    next();
+  }
+);
+
+UserSchema.pre<UserDocument>(
+  "findOne",
+  function preFindOne(this: UserDocument, next) {
+    if (!this.isSelected("password")) {
+      next();
+    }
+
+    const salt = genSaltSync(Number(process.env.BCRYPT_SALT) ?? 10);
+    this.password = hashSync(this.password, salt);
+    next();
   }
 );
 

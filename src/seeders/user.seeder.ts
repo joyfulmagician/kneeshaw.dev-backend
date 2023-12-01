@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 import { genSaltSync, hashSync } from "bcryptjs";
 
 import { USER_ROLES, USER_STATUS } from "../utils/const.util";
