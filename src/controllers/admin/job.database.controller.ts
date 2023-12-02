@@ -4,7 +4,7 @@ import httpStatus from "http-status";
 import { JobDatabase } from "../../models/job.database.model";
 
 /**
- * create a job skill
+ * create a job database
  *
  * @param req
  * @param res
@@ -52,6 +52,14 @@ async function getAllJobDatabases(
   return res.status(httpStatus.OK).json({ data: databases });
 }
 
+/**
+ * get a job database
+ *
+ * @param req
+ * @param res
+ * @param _next
+ * @returns
+ */
 async function getJobDatabase(
   req: Request,
   res: Response,

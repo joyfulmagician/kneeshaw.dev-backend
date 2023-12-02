@@ -4,7 +4,7 @@ import httpStatus from "http-status";
 import { JobService } from "../../models/job.service.model";
 
 /**
- * create a job skill
+ * create a job service
  *
  * @param req
  * @param res
@@ -52,6 +52,14 @@ async function getAllJobServices(
   return res.status(httpStatus.OK).json({ data: services });
 }
 
+/**
+ * get a job service
+ *
+ * @param req
+ * @param res
+ * @param _next
+ * @returns
+ */
 async function getJobService(req: Request, res: Response, _next: NextFunction) {
   const { id } = req.params;
 
@@ -67,7 +75,7 @@ async function getJobService(req: Request, res: Response, _next: NextFunction) {
 }
 
 /**
- * update a job skill
+ * update a job service
  *
  * @param req
  * @param res
@@ -104,7 +112,7 @@ async function updateJobService(
 }
 
 /**
- * delete a job skill
+ * delete a job service
  *
  * @param req
  * @param res
