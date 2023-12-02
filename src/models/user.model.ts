@@ -9,6 +9,8 @@ interface IUser {
   password: string;
   role: string;
   status: number;
+
+  comparePassword(password: string): boolean;
 }
 
 interface UserDocument extends Document {
@@ -73,18 +75,11 @@ UserSchema.pre<UserDocument>(
   }
 );
 
-UserSchema.pre<UserDocument>(
-  "findOne",
-  function preFindOne(this: UserDocument, next) {
-    if (!this.isSelected("password")) {
-      next();
-    }
-
-    const salt = genSaltSync(Number(process.env.BCRYPT_SALT) ?? 10);
-    this.password = hashSync(this.password, salt);
-    next();
-  }
-);
+UserSchema.methods.comparePassword = function comparePassword(
+  password: string
+) {
+  return compareSync(password, this.password);
+};
 
 const User: Model<UserDocument> = model<UserDocument>("User", UserSchema);
 
