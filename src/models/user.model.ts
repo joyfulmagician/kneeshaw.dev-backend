@@ -2,8 +2,9 @@ import { Document, model, Model, Schema } from "mongoose";
 import { compareSync, genSaltSync, hashSync } from "bcryptjs";
 
 interface IUser {
+  _id: string;
   email: string;
-  username: string;
+  userName: string;
   firstName: string;
   lastName: string;
   password: string;
@@ -15,7 +16,7 @@ interface IUser {
 
 interface UserDocument extends Document {
   email: string;
-  username: string;
+  userName: string;
   firstName: string;
   lastName: string;
   password: string;
@@ -29,7 +30,8 @@ const UserSchema: Schema = new Schema(
       type: String,
       required: true,
       unique: true,
-      lowercase: true
+      lowercase: true,
+      trim: true
     },
     userName: {
       type: String,

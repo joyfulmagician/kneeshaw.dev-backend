@@ -5,5 +5,9 @@ export default async function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  next();
+  if (req.user) {
+    next();
+  } else {
+    res.status(401).json({ message: "Unauthorized user!" });
+  }
 }

@@ -31,7 +31,10 @@
   ],
   "ignorePatterns": ["node_modules/", "dist/"],
   "rules": {
-    "no-console": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
+    ],
 
     "import/extensions": [
       "error",
@@ -42,10 +45,9 @@
       }
     ],
 
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_" }
-    ],
+    "no-console": "off",
+
+    "no-underscore-dangle": "off",
 
     "prettier/prettier": [
       "error",
