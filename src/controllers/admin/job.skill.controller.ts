@@ -52,6 +52,14 @@ async function getAllJobSkills(
   return res.status(httpStatus.OK).json({ data: skills });
 }
 
+/**
+ * get a job skill
+ *
+ * @param req
+ * @param res
+ * @param _next
+ * @returns
+ */
 async function getJobSkill(req: Request, res: Response, _next: NextFunction) {
   const { id } = req.params;
 
