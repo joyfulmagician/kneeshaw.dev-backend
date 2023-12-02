@@ -4,6 +4,7 @@ import authRoutes from "./auth.route";
 import jobSkillRoutes from "./job.skill.route";
 import jobServiceRoutes from "./job.service.route";
 import jobDatabaseRoutes from "./job.database.route";
+import jobScopeRoutes from "./job.scope.route";
 
 import adminMiddleware from "../../middleware/admin.middleware";
 
@@ -14,5 +15,6 @@ router.use("/auth", authRoutes);
 router.use("/job/skill", adminMiddleware, jobSkillRoutes);
 router.use("/job/service", adminMiddleware, jobServiceRoutes);
 router.use("/job/database", adminMiddleware, jobDatabaseRoutes);
+router.use("/job/scope", adminMiddleware, jobScopeRoutes);
 
 export default router;
