@@ -16,17 +16,20 @@ async function createJobPeriod(
   res: Response,
   _next: NextFunction
 ) {
-  const { name, description } = req.body;
+  const { name, description, minTerm, maxTerm } = req.body;
 
-  if (!name || !description) {
+  if (!name || !description || !minTerm || !maxTerm) {
     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The name and description fields are required."
+      message:
+        "The name, description, min period and max period fields are required."
     });
   }
 
   const period = {
     name,
-    description
+    description,
+    minTerm,
+    maxTerm
   };
 
   const periodCreated = await JobPeriod.create(period);
@@ -88,7 +91,7 @@ async function updateJobPeriod(
   _next: NextFunction
 ) {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { name, description, minTerm, maxTerm } = req.body;
 
   const period = await JobPeriod.findOne({ _id: id });
 
@@ -98,15 +101,21 @@ async function updateJobPeriod(
       .json({ message: `Period with id "${id}" not found.` });
   }
 
-  if (!name || !description) {
-    return res
-      .status(httpStatus.UNPROCESSABLE_ENTITY)
-      .json({ message: "The name and description fields are required" });
+  if (!name || !description || !minTerm || !maxTerm) {
+    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+      message:
+        "The name, description, min period and max period fields are required"
+    });
   }
 
   await JobPeriod.updateOne({ _id: id }, { name, description });
 
-  const periodUpdated = await JobPeriod.findById(id, { name, description });
+  const periodUpdated = await JobPeriod.findById(id, {
+    name,
+    description,
+    minTerm,
+    maxTerm
+  });
 
   return res.status(httpStatus.OK).json({ data: periodUpdated });
 }
