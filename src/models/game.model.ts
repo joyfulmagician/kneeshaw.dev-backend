@@ -14,7 +14,6 @@ interface GameDocument extends Document {
   title: string;
   description: string;
   price: number;
-
 }
 
 const gameSchema: Schema = new Schema(
@@ -41,13 +40,10 @@ const gameSchema: Schema = new Schema(
   },
   {
     timestamps: true,
-    collection: "Game"
+    collection: "games"
   }
 );
 
-const Game: Model<GameDocument> = model<GameDocument>(
-  "Game",
-  gameSchema
-);
+const Game: Model<GameDocument> = model<GameDocument>("Game", gameSchema);
 
 export { IGame, GameDocument, Game };
