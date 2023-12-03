@@ -1,9 +1,11 @@
+import config from "config";
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { Application } from "express";
 
-import routes from "./routes";
+import jwtVerifyMiddleware from "./middleware/jwt.verify.middleware";
 import connectDB from "./services/db.service";
+import routes from "./routes";
 
 dotenv.config();
 
@@ -11,13 +13,16 @@ const app: Application = express();
 
 // Cors configuration
 const corsOptions = {
-  origin: "http://localhost:3000"
+  origin: config.get<string>("origin")
 };
 app.use(cors(corsOptions));
 
 // Parse request of content type
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Use middleware
+app.use(jwtVerifyMiddleware);
 
 // Use routes
 app.use(routes);
@@ -27,7 +32,7 @@ connectDB()
   .then(() => {
     console.info("Database connected successfully.");
 
-    const PORT = process.env.PORT || 5000;
+    const PORT = process.env.PORT || config.get<number>("port");
     app.listen(PORT, () => {
       console.info(`Server is running on port ${PORT}`);
     });
