@@ -1,10 +1,13 @@
 import { genSaltSync, hashSync } from "bcryptjs";
+import config from "config";
 
 import { USER_ROLES, USER_STATUS } from "../utils/const.util";
 import { User } from "../models/user.model";
 
 export default async function seedUsers() {
-  const salt = genSaltSync(Number(process.env.BCRYPT_SALT) ?? 10);
+  const salt = genSaltSync(
+    Number(process.env.BCRYPT_SALT) ?? config.get<number>("bcrypt.salt")
+  );
 
   await User.deleteMany({});
 
