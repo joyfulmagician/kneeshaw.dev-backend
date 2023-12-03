@@ -52,6 +52,14 @@ async function getAllJobScopes(
   return res.status(httpStatus.OK).json({ data: scopes });
 }
 
+/**
+ * get a job scope
+ *
+ * @param req
+ * @param res
+ * @param _next
+ * @returns
+ */
 async function getJobScope(req: Request, res: Response, _next: NextFunction) {
   const { id } = req.params;
 
