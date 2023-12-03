@@ -6,6 +6,8 @@ import jobServiceRoutes from "./job.service.route";
 import jobDatabaseRoutes from "./job.database.route";
 import jobScopeRoutes from "./job.scope.route";
 import jobPeriodRoutes from "./job.period.route";
+import jobExperienceRoutes from "./job.experience.route";
+import jobBudgetRoutes from "./job.budget.route";
 
 import adminMiddleware from "../../middleware/admin.middleware";
 
@@ -18,5 +20,7 @@ router.use("/job/service", adminMiddleware, jobServiceRoutes);
 router.use("/job/database", adminMiddleware, jobDatabaseRoutes);
 router.use("/job/scope", adminMiddleware, jobScopeRoutes);
 router.use("/job/period", adminMiddleware, jobPeriodRoutes);
+router.use("/job/experience", adminMiddleware, jobExperienceRoutes);
+router.use("/job/budget", adminMiddleware, jobBudgetRoutes);
 
 export default router;
