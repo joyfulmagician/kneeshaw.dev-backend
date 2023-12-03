@@ -8,6 +8,6 @@ router.post("/", jobBudgetController.createJobBudget);
 router.get("/", jobBudgetController.getAllJobBudgets);
 router.get("/:id", jobBudgetController.getJobBudget);
 router.put("/:id", jobBudgetController.updateJobBudget);
-router.delete("/:id", jobBudgetController.deleteJobBudget);
+// router.delete("/:id", jobBudgetController.deleteJobBudget);
 
 export default router;
