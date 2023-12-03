@@ -4,7 +4,7 @@ import httpStatus from "http-status";
 import { JobBudget } from "../../models/job.budget.model";
 
 /**
- * create a job skill
+ * create a job budget
  *
  * @param req
  * @param res
@@ -20,7 +20,7 @@ async function createJobBudget(
 
   if (!name || !type || !min || !max) {
     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The all fields are required."
+      message: "The name, type, min, and max fields are required."
     });
   }
 
@@ -49,7 +49,7 @@ async function getAllJobBudgets(
   res: Response,
   _next: NextFunction
 ) {
-  const budgets = await JobBudget.find().sort("type").exec();
+  const budgets = await JobBudget.find().sort("name").exec();
 
   return res.status(httpStatus.OK).json({ data: budgets });
 }
@@ -103,7 +103,7 @@ async function updateJobBudget(
   if (!name || !type || !min || max) {
     return res
       .status(httpStatus.UNPROCESSABLE_ENTITY)
-      .json({ message: "The all fields are required" });
+      .json({ message: "The name, type, min, and max fields are required" });
   }
 
   await JobBudget.updateOne({ _id: id }, { name, type, min, max });
@@ -113,32 +113,9 @@ async function updateJobBudget(
   return res.status(httpStatus.OK).json({ data: budgetUpdated });
 }
 
-/**
- * delete a job budget
- *
-//  * @param req
-//  * @param res
-//  * @param _next
-//  * @returns
-//  */
-// async function deleteJobBudget(
-//   req: Request,
-//   res: Response,
-//   _next: NextFunction
-// ) {
-//   const { id } = req.params;
-
-//   await JobBudget.findByIdAndDelete(id);
-
-//   return res
-//     .status(httpStatus.OK)
-//     .json({ message: "Job Budget deleted successfully." });
-// }
-
 export default {
   createJobBudget,
   getAllJobBudgets,
   getJobBudget,
   updateJobBudget
-  // deleteJobBudget
 };
