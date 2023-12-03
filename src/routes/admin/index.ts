@@ -2,6 +2,7 @@ import express from "express";
 
 import authRoutes from "./auth.route";
 import gameRoutes from "./game.route";
+import blogRoutes from "./blog.route";
 import jobSkillRoutes from "./job.skill.route";
 import jobServiceRoutes from "./job.service.route";
 import jobDatabaseRoutes from "./job.database.route";
@@ -17,6 +18,7 @@ const router = express.Router();
 router.use("/auth", authRoutes);
 
 router.use("/game", adminMiddleware, gameRoutes);
+router.use("/blog", adminMiddleware, blogRoutes);
 
 router.use("/job/skill", adminMiddleware, jobSkillRoutes);
 router.use("/job/service", adminMiddleware, jobServiceRoutes);
