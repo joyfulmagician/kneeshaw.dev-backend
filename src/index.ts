@@ -1,19 +1,16 @@
-import config from "config";
 import cors from "cors";
-import dotenv from "dotenv";
 import express, { Application } from "express";
 
+import defaultConfig from "./config/default.config";
 import jwtVerifyMiddleware from "./middleware/jwt.verify.middleware";
 import connectDB from "./services/db.service";
 import routes from "./routes";
-
-dotenv.config();
 
 const app: Application = express();
 
 // Cors configuration
 const corsOptions = {
-  origin: config.get<string>("origin")
+  origin: defaultConfig.app.origin
 };
 app.use(cors(corsOptions));
 
@@ -32,7 +29,7 @@ connectDB()
   .then(() => {
     console.info("Database connected successfully.");
 
-    const PORT = process.env.PORT || config.get<number>("port");
+    const PORT = defaultConfig.app.port;
     app.listen(PORT, () => {
       console.info(`Server is running on port ${PORT}`);
     });

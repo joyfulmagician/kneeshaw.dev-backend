@@ -4,6 +4,7 @@ import { sign } from "jsonwebtoken";
 
 import { IUser, User } from "../models/user.model";
 import { USER_ROLES } from "../utils/const.util";
+import defaultConfig from "../config/default.config";
 
 /**
  * Login a user
@@ -34,7 +35,7 @@ async function login(req: Request, res: Response, _next: NextFunction) {
             role: user.role,
             status: user.status
           },
-          process.env.JWT_SECRET ?? ""
+          defaultConfig.jwt.secret
         )
       });
     } else {
@@ -76,7 +77,7 @@ async function register(req: Request, res: Response, _next: NextFunction) {
             role: user.role,
             status: user.status
           },
-          process.env.JWT_SECRET ?? ""
+          defaultConfig.jwt.secret
         )
       });
     } else {
