@@ -1,6 +1,7 @@
-import config from "config";
 import { compareSync, genSaltSync, hashSync } from "bcryptjs";
 import { Document, model, Model, Schema } from "mongoose";
+
+import defaultConfig from "../config/default.config";
 
 interface IUser {
   _id: string;
@@ -72,9 +73,7 @@ UserSchema.pre<UserDocument>(
       next();
     }
 
-    const salt = genSaltSync(
-      Number(process.env.BCRYPT_SALT) ?? config.get<number>("bcrypt.salt")
-    );
+    const salt = genSaltSync(defaultConfig.bcrypt.salt);
     this.password = hashSync(this.password, salt);
     next();
   }

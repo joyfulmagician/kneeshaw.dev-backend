@@ -1,8 +1,8 @@
-import config from "config";
 import { connect } from "mongoose";
+import defaultConfig from "../config/default.config";
 
 const connectDB = () => {
-  return connect(process.env.MONGODB_URI ?? config.get<string>("mongodb.uri"));
+  return connect(defaultConfig.mongodb.uri);
 };
 
 export default connectDB;
