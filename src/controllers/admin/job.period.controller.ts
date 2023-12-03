@@ -20,8 +20,7 @@ async function createJobPeriod(
 
   if (!name || !description || !minTerm || !maxTerm) {
     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message:
-        "The name, description, min period and max period fields are required."
+      message: "The name, description, min, and max term fields are required."
     });
   }
 
@@ -103,8 +102,7 @@ async function updateJobPeriod(
 
   if (!name || !description || !minTerm || !maxTerm) {
     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message:
-        "The name, description, min period and max period fields are required"
+      message: "The name, description, min, and max term fields are required"
     });
   }
 
