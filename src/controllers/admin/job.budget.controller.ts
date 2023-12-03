@@ -116,29 +116,29 @@ async function updateJobBudget(
 /**
  * delete a job budget
  *
- * @param req
- * @param res
- * @param _next
- * @returns
- */
-async function deleteJobBudget(
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) {
-  const { id } = req.params;
+//  * @param req
+//  * @param res
+//  * @param _next
+//  * @returns
+//  */
+// async function deleteJobBudget(
+//   req: Request,
+//   res: Response,
+//   _next: NextFunction
+// ) {
+//   const { id } = req.params;
 
-  await JobBudget.findByIdAndDelete(id);
+//   await JobBudget.findByIdAndDelete(id);
 
-  return res
-    .status(httpStatus.OK)
-    .json({ message: "Job Budget deleted successfully." });
-}
+//   return res
+//     .status(httpStatus.OK)
+//     .json({ message: "Job Budget deleted successfully." });
+// }
 
 export default {
   createJobBudget,
   getAllJobBudgets,
   getJobBudget,
-  updateJobBudget,
-  deleteJobBudget
+  updateJobBudget
+  // deleteJobBudget
 };
