@@ -4,18 +4,14 @@ import httpStatus from "http-status";
 import { Game } from "../../models/game.model";
 
 /**
- * create a job skill
+ * create a game
  *
  * @param req
  * @param res
  * @param _next
  * @returns
  */
-async function createGame(
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) {
+async function createGame(req: Request, res: Response, _next: NextFunction) {
   const { img, title, description, price } = req.body;
 
   if (!img || !title || !description || !price) {
@@ -31,31 +27,27 @@ async function createGame(
     price
   };
 
-  const GameCreated = await Game.create(game);
+  const gameCreated = await Game.create(game);
 
-  return res.status(httpStatus.CREATED).json({ data: GameCreated });
+  return res.status(httpStatus.CREATED).json({ data: gameCreated });
 }
 
 /**
- * get all job skills
+ * get all games
  *
  * @param req
  * @param res
  * @param _next
  * @returns
  */
-async function getAllGames(
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) {
+async function getAllGames(req: Request, res: Response, _next: NextFunction) {
   const games = await Game.find().sort("title").exec();
 
   return res.status(httpStatus.OK).json({ data: games });
 }
 
 /**
- * get a job skill
+ * get a game
  *
  * @param req
  * @param res
@@ -77,18 +69,14 @@ async function getGame(req: Request, res: Response, _next: NextFunction) {
 }
 
 /**
- * update a job skill
+ * update a game
  *
  * @param req
  * @param res
  * @param _next
  * @returns
  */
-async function updateGame(
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) {
+async function updateGame(req: Request, res: Response, _next: NextFunction) {
   const { id } = req.params;
   const { img, title, description, price } = req.body;
 
@@ -101,31 +89,32 @@ async function updateGame(
   }
 
   if (!img || !title || !description || !price) {
-    return res
-      .status(httpStatus.UNPROCESSABLE_ENTITY)
-      .json({ message: "The image, title, description and price fields are required" });
+    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+      message: "The image, title, description and price fields are required"
+    });
   }
 
   await Game.updateOne({ _id: id }, { img, title, description, price });
 
-  const gameUpdated = await Game.findById(id, { img, title, description, price });
+  const gameUpdated = await Game.findById(id, {
+    img,
+    title,
+    description,
+    price
+  });
 
   return res.status(httpStatus.OK).json({ data: gameUpdated });
 }
 
 /**
- * delete a job skill
+ * delete a game
  *
  * @param req
  * @param res
  * @param _next
  * @returns
  */
-async function deleteGame(
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) {
+async function deleteGame(req: Request, res: Response, _next: NextFunction) {
   const { id } = req.params;
 
   await Game.findByIdAndDelete(id);
