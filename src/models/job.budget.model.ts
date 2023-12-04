@@ -3,7 +3,7 @@ import { Document, model, Model, Schema } from "mongoose";
 interface IJobBudget {
   _id: string;
   name: string;
-  type: string;
+  type: number;
   min: number;
   max: number;
 }
@@ -11,7 +11,7 @@ interface IJobBudget {
 interface JobBudgetDocument extends Document {
   _id: string;
   name: string;
-  type: string;
+  type: number;
   min: number;
   max: number;
 }
@@ -26,7 +26,7 @@ const JobBudgetSchema: Schema = new Schema(
       trim: true
     },
     type: {
-      type: String,
+      type: Number,
       required: true
     },
     min: {
