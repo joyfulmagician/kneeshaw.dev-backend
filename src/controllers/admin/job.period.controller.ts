@@ -24,6 +24,13 @@ async function createJobPeriod(
     });
   }
 
+  const existingPeriod = await JobPeriod.findOne({ name });
+  if (existingPeriod) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job period with the same name already exists."
+    });
+  }
+
   const period = {
     name,
     description,
@@ -103,6 +110,13 @@ async function updateJobPeriod(
   if (!name || !description || !minTerm || !maxTerm) {
     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
       message: "The name, description, min, and max term fields are required"
+    });
+  }
+
+  const existingPeriod = await JobPeriod.findOne({ name, _id: { $ne: id } });
+  if (existingPeriod) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job period with the same name already exists."
     });
   }
 
