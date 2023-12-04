@@ -9,7 +9,7 @@ interface CService {
 
 interface ServiceDocument extends Document {
   _id: string;
-  image: string;
+  images: string;
   title: string;
   description: string;
 }
@@ -31,7 +31,7 @@ const ServiceSchema: Schema = new Schema(
   },
   {
     timestamps: true,
-    collection: "service"
+    collection: "services"
   }
 );
 
