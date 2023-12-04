@@ -1,15 +1,21 @@
 import { Document, model, Model, Schema } from "mongoose";
 
-interface CService {
+interface IService {
   _id: string;
-  image: string;
+  image: {
+    data: Buffer;
+    contentType: string;
+  };
   title: string;
   description: string;
 }
 
 interface ServiceDocument extends Document {
   _id: string;
-  images: string;
+  image: {
+    data: Buffer;
+    contentType: string;
+  };
   title: string;
   description: string;
 }
@@ -17,8 +23,12 @@ interface ServiceDocument extends Document {
 const ServiceSchema: Schema = new Schema(
   {
     image: {
-      type: String,
-      required: true
+      data: {
+        type: Buffer
+      },
+      contentType: {
+        type: String
+      }
     },
     title: {
       type: String,
@@ -40,4 +50,4 @@ const Service: Model<ServiceDocument> = model<ServiceDocument>(
   ServiceSchema
 );
 
-export { CService, ServiceDocument, Service };
+export { IService, ServiceDocument, Service };

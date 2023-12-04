@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { readFileSync } from "fs";
 import httpStatus from "http-status";
 
 import { Service } from "../../models/service.model";
+import upload from "../../services/upload.service";
 
 /**
  * create a service
@@ -12,23 +14,34 @@ import { Service } from "../../models/service.model";
  * @returns
  */
 async function createService(req: Request, res: Response, _next: NextFunction) {
-  const { image, title, description } = req.body;
+  upload("services").single("image")(req, res, async function error(err) {
+    if (err) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while uploading image."
+      });
+    }
 
-  if (!image || !title || !description) {
-    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The image, title and description fields are required."
-    });
-  }
+    const { title, description } = req.body;
 
-  const service = {
-    image,
-    title,
-    description
-  };
+    if (!title || !description) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message: "The title and description fields are required."
+      });
+    }
 
-  const serviceCreated = await Service.create(service);
+    const service = {
+      image: {
+        data: readFileSync(req.file?.path ?? ""),
+        contentType: req.file?.mimetype
+      },
+      title,
+      description
+    };
 
-  return res.status(httpStatus.CREATED).json({ data: serviceCreated });
+    const serviceCreated = await Service.create(service);
+
+    return res.status(httpStatus.CREATED).json({ data: serviceCreated });
+  });
 }
 
 /**
