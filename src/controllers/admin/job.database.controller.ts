@@ -24,6 +24,13 @@ async function createJobDatabase(
     });
   }
 
+  const existingDatabase = await JobDatabase.findOne({ name });
+  if (existingDatabase) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job database with the same name already exists."
+    });
+  }
+
   const database = {
     name,
     description
@@ -106,6 +113,16 @@ async function updateJobDatabase(
     return res
       .status(httpStatus.UNPROCESSABLE_ENTITY)
       .json({ message: "The name and description fields are required" });
+  }
+
+  const existingDatabase = await JobDatabase.findOne({
+    name,
+    _id: { $ne: id }
+  });
+  if (existingDatabase) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job database with the same name already exists."
+    });
   }
 
   await JobDatabase.updateOne({ _id: id }, { name, description });
