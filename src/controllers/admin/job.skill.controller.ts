@@ -24,6 +24,13 @@ async function createJobSkill(
     });
   }
 
+  const existingSkill = await JobSkill.findOne({ name });
+  if (existingSkill) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job skill with the same name already exists."
+    });
+  }
+
   const skill = {
     name,
     description
@@ -105,7 +112,6 @@ async function updateJobSkill(
   }
 
   await JobSkill.updateOne({ _id: id }, { name, description });
-
   const skillUpdated = await JobSkill.findById(id, { name, description });
 
   return res.status(httpStatus.OK).json({ data: skillUpdated });
