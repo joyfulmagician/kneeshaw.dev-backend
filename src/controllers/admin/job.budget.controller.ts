@@ -4,54 +4,23 @@ import httpStatus from "http-status";
 import { JobBudget } from "../../models/job.budget.model";
 
 /**
- * create a job budget
+ * get a job budget by type
  *
  * @param req
  * @param res
  * @param _next
  * @returns
  */
-async function createJobBudget(
+async function getJobBudgetByType(
   req: Request,
   res: Response,
   _next: NextFunction
 ) {
-  const { name, type, min, max } = req.body;
+  const { type } = req.query;
 
-  if (!name || !type || !min || !max) {
-    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The name, type, min, and max fields are required."
-    });
-  }
+  const budget = await JobBudget.findOne({ type });
 
-  const budget = {
-    name,
-    type,
-    min,
-    max
-  };
-
-  const budgetCreated = await JobBudget.create(budget);
-
-  return res.status(httpStatus.CREATED).json({ data: budgetCreated });
-}
-
-/**
- * get all job budgets
- *
- * @param req
- * @param res
- * @param _next
- * @returns
- */
-async function getAllJobBudgets(
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) {
-  const budgets = await JobBudget.find().sort("name").exec();
-
-  return res.status(httpStatus.OK).json({ data: budgets });
+  return res.status(httpStatus.OK).json({ data: budget });
 }
 
 /**
@@ -90,7 +59,7 @@ async function updateJobBudget(
   _next: NextFunction
 ) {
   const { id } = req.params;
-  const { name, type, min, max } = req.body;
+  const { min, max } = req.body;
 
   const budget = await JobBudget.findOne({ _id: id });
 
@@ -100,22 +69,21 @@ async function updateJobBudget(
       .json({ message: `Budget with id "${id}" not found.` });
   }
 
-  if (!name || !type || !min || max) {
+  if (!min || !max) {
     return res
       .status(httpStatus.UNPROCESSABLE_ENTITY)
-      .json({ message: "The name, type, min, and max fields are required" });
+      .json({ message: "The min and max fields are required" });
   }
 
-  await JobBudget.updateOne({ _id: id }, { name, type, min, max });
+  await JobBudget.updateOne({ _id: id }, { min, max });
 
-  const budgetUpdated = await JobBudget.findById(id, { name, type, min, max });
+  const budgetUpdated = await JobBudget.findById(id);
 
   return res.status(httpStatus.OK).json({ data: budgetUpdated });
 }
 
 export default {
-  createJobBudget,
-  getAllJobBudgets,
+  getJobBudgetByType,
   getJobBudget,
   updateJobBudget
 };
