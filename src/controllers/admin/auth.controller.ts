@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 import { sign } from "jsonwebtoken";
 
 import { IUser, User } from "../../models/user.model";
-import { USER_ROLES } from "../../utils/const.util";
+import { USER_ROLES, USER_STATUS } from "../../utils/const.util";
 import defaultConfig from "../../config/default.config";
 
 async function login(req: Request, res: Response, _next: NextFunction) {
@@ -15,10 +15,12 @@ async function login(req: Request, res: Response, _next: NextFunction) {
     if (
       user &&
       user.role === USER_ROLES.ADMIN &&
+      user.status === USER_STATUS.ENABLED &&
       user.comparePassword(password)
     ) {
-      res.status(httpStatus.OK).json({
-        token: sign(
+      return res.status(httpStatus.OK).json({
+        user,
+        accessToken: sign(
           {
             _id: user._id,
             email: user.email,
@@ -31,13 +33,17 @@ async function login(req: Request, res: Response, _next: NextFunction) {
           defaultConfig.jwt.secret
         )
       });
-    } else {
-      res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ message: "Authentication failed." });
     }
+
+    return res
+      .status(httpStatus.UNAUTHORIZED)
+      .json({ message: "Authentication failed." });
   } catch (error) {
     console.error("admin auth.controller login error: ", error);
+
+    return res
+      .status(httpStatus.UNAUTHORIZED)
+      .json({ message: "Authentication failed." });
   }
 }
 
