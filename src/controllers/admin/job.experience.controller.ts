@@ -24,6 +24,13 @@ async function createJobExperience(
     });
   }
 
+  const existingExperience = await JobExperience.findOne({ name });
+  if (existingExperience) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job experience with the same name already exists."
+    });
+  }
+
   const experience = {
     name,
     description
@@ -106,6 +113,16 @@ async function updateJobExperience(
     return res
       .status(httpStatus.UNPROCESSABLE_ENTITY)
       .json({ message: "The name and description fields are required" });
+  }
+
+  const existingExperience = await JobExperience.findOne({
+    name,
+    _id: { $ne: id }
+  });
+  if (existingExperience) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job experience with the same name already exists."
+    });
   }
 
   await JobExperience.updateOne({ _id: id }, { name, description });
