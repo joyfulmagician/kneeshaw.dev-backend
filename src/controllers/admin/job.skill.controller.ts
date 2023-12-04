@@ -111,6 +111,13 @@ async function updateJobSkill(
       .json({ message: "The name and description fields are required" });
   }
 
+  const existingSkill = await JobSkill.findOne({ name, _id: { $ne: id } });
+  if (existingSkill) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job skill with the same name already exists."
+    });
+  }
+
   await JobSkill.updateOne({ _id: id }, { name, description });
   const skillUpdated = await JobSkill.findById(id, { name, description });
 
