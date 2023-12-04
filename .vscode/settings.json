@@ -1,5 +1,11 @@
 {
-  "cSpell.words": ["codepaths", "kneeshaw", "Parens", "tsbuildinfo"],
+  "cSpell.words": [
+    "codepaths",
+    "gameplay",
+    "kneeshaw",
+    "Parens",
+    "tsbuildinfo"
+  ],
   "prettier.configPath": ".prettierrc.json",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
