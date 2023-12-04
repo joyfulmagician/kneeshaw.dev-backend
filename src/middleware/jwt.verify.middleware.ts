@@ -19,8 +19,6 @@ export default async function jwtVerifyMiddleware(
       defaultConfig.jwt.secret
     );
 
-    console.log("decodedUser: ", decodedUser);
-
     if (decodedUser) {
       req.user = decodedUser as IUser;
     } else {
