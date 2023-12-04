@@ -18,7 +18,7 @@ async function createJobPeriod(
 ) {
   const { name, description, minTerm, maxTerm } = req.body;
 
-  if (!name || !description || !minTerm || !maxTerm) {
+  if (!name || !description || minTerm < 0 || maxTerm < 0) {
     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
       message: "The name, description, min, and max term fields are required."
     });
@@ -107,7 +107,7 @@ async function updateJobPeriod(
       .json({ message: `Period with id "${id}" not found.` });
   }
 
-  if (!name || !description || !minTerm || !maxTerm) {
+  if (!name || !description || minTerm < 0 || maxTerm < 0) {
     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
       message: "The name, description, min, and max term fields are required"
     });
