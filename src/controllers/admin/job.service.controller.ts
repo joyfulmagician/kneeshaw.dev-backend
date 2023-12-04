@@ -24,6 +24,13 @@ async function createJobService(
     });
   }
 
+  const existingService = await JobService.findOne({ name });
+  if (existingService) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job service with the same name already exists."
+    });
+  }
+
   const service = {
     name,
     description
@@ -102,6 +109,13 @@ async function updateJobService(
     return res
       .status(httpStatus.UNPROCESSABLE_ENTITY)
       .json({ message: "The name and description fields are required" });
+  }
+
+  const existingService = await JobService.findOne({ name, _id: { $ne: id } });
+  if (existingService) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job service with the same name already exists."
+    });
   }
 
   await JobService.updateOne({ _id: id }, { name, description });
