@@ -24,6 +24,13 @@ async function createJobScope(
     });
   }
 
+  const existingScope = await JobScope.findOne({ name });
+  if (existingScope) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job scope with the same name already exists."
+    });
+  }
+
   const scope = {
     name,
     description
@@ -102,6 +109,13 @@ async function updateJobScope(
     return res
       .status(httpStatus.UNPROCESSABLE_ENTITY)
       .json({ message: "The name and description fields are required" });
+  }
+
+  const existingScope = await JobScope.findOne({ name, _id: { $ne: id } });
+  if (existingScope) {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "A job scope with the same name already exists."
+    });
   }
 
   await JobScope.updateOne({ _id: id }, { name, description });
