@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { readFileSync } from "fs";
 import httpStatus from "http-status";
 
-import { User } from "../../models/user.model";
+import { IUser, User, UserDocument } from "../../models/user.model";
+import upload from "../../services/upload.service";
 
 /**
  * get all User
@@ -34,7 +36,6 @@ async function getUser(req: Request, res: Response, _next: NextFunction) {
       message: `User with id "${id}" not found.`
     });
   }
-  console.log(user.email);
   return res.status(httpStatus.OK).json({ data: user });
 }
 
@@ -47,43 +48,15 @@ async function getUser(req: Request, res: Response, _next: NextFunction) {
  * @returns
  */
 async function updateUser(req: Request, res: Response, _next: NextFunction) {
-  const { id } = req.params;
-  const {
-    email,
-    userName,
-    firstName,
-    lastName,
-    password,
-    role,
-    shipping,
-    credit
-  } = req.body;
+  upload("users").single("image")(req, res, async function error(err) {
+    if (err) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while uploading avatar."
+      });
+    }
 
-  const user = await User.findOne({ _id: id });
-
-  if (!user) {
-    return res
-      .status(httpStatus.NOT_FOUND)
-      .json({ message: `User with id "${id}" not found.` });
-  }
-
-  if (!email || !userName || !firstName || !role) {
-    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message:
-        "The email, userName, firstName, lastName and role fields are required"
-    });
-  }
-
-  const existingUser = await User.findOne({ email, _id: { $ne: id } });
-  if (existingUser) {
-    return res.status(httpStatus.FORBIDDEN).json({
-      message: "A User with the same email already exists."
-    });
-  }
-
-  await User.updateOne(
-    { _id: id },
-    {
+    const { id } = req.params;
+    const {
       email,
       userName,
       firstName,
@@ -91,23 +64,42 @@ async function updateUser(req: Request, res: Response, _next: NextFunction) {
       password,
       role,
       shipping,
-      credit
+      credit,
+      status
+    } = req.body;
+
+    if (!email || !userName || !firstName || !role) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message:
+          "The email, userName, firstName, lastName and role fields are required"
+      });
     }
-  );
-  const userUpdated = await User.findById(id, {
-    email,
-    userName,
-    firstName,
-    lastName,
-    password,
-    role,
-    shipping,
-    credit
+    let user: Omit<IUser, "comparePassword"> = {
+      email,
+      userName,
+      firstName,
+      lastName,
+      password,
+      role,
+      shipping,
+      credit,
+      status
+    };
+
+    if (req.file) {
+      user = {
+        ...user,
+        image: {
+          data: readFileSync(req.file?.path ?? ""),
+          contentType: req.file?.mimetype
+        }
+      };
+    }
+    await User.updateOne({ _id: id }, user);
+    const userUpdated = await User.findById(id);
+    return res.status(httpStatus.OK).json({ data: userUpdated });
   });
-
-  return res.status(httpStatus.OK).json({ data: userUpdated });
 }
-
 /**
  * delete a User
  *
