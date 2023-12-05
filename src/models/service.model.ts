@@ -1,8 +1,8 @@
 import { Document, model, Model, Schema } from "mongoose";
 
 interface IService {
-  _id: string;
-  image: {
+  _id?: string;
+  image?: {
     data: Buffer;
     contentType: string;
   };
