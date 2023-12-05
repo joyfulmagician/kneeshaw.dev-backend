@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { readFileSync } from "fs";
 import httpStatus from "http-status";
 
-import { Service } from "../../models/service.model";
+import { IService, Service } from "../../models/service.model";
 import upload from "../../services/upload.service";
 
 /**
@@ -93,32 +93,44 @@ async function getService(req: Request, res: Response, _next: NextFunction) {
  * @returns
  */
 async function updateService(req: Request, res: Response, _next: NextFunction) {
-  const { id } = req.params;
-  const { image, title, description } = req.body;
+  upload("services").single("image")(req, res, async function error(err) {
+    if (err) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while uploading image."
+      });
+    }
 
-  const service = await Service.findOne({ _id: id });
+    const { id } = req.params;
 
-  if (!service) {
-    return res
-      .status(httpStatus.NOT_FOUND)
-      .json({ message: `Service with id "${id}" not found.` });
-  }
+    const { title, description } = req.body;
 
-  if (!image || !title || !description) {
-    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The image, title and description fields are required"
-    });
-  }
+    if (!title || !description) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message: "The title and description fields are required."
+      });
+    }
 
-  await Service.updateOne({ _id: id }, { image, title, description });
+    let service: IService = {
+      title,
+      description
+    };
 
-  const serviceUpdated = await Service.findById(id, {
-    image,
-    title,
-    description
+    if (req.file) {
+      service = {
+        ...service,
+        image: {
+          data: readFileSync(req.file?.path ?? ""),
+          contentType: req.file?.mimetype
+        }
+      };
+    }
+
+    await Service.updateOne({ _id: id }, service);
+
+    const serviceUpdated = await Service.findById(id);
+
+    return res.status(httpStatus.OK).json({ data: serviceUpdated });
   });
-
-  return res.status(httpStatus.OK).json({ data: serviceUpdated });
 }
 
 /**
