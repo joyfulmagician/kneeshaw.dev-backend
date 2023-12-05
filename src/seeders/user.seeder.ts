@@ -1,4 +1,6 @@
 import { genSaltSync, hashSync } from "bcryptjs";
+import { readFileSync } from "fs";
+import path from "path";
 
 import { USER_ROLES, USER_STATUS } from "../utils/const.util";
 import { User } from "../models/user.model";
@@ -11,6 +13,10 @@ export default async function seedUsers() {
 
   const adminUsers = [
     {
+      image: {
+        data: readFileSync(path.join("uploads", "users", "seed", "01.png")),
+        contentType: "image/png"
+      },
       email: "michael@kneeshaw.dev",
       userName: "MichaelKneeshaw",
       firstName: "Michael",

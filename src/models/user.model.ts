@@ -4,7 +4,11 @@ import { Document, model, Model, Schema } from "mongoose";
 import defaultConfig from "../config/default.config";
 
 interface IUser {
-  _id: string;
+  _id?: string;
+  image?: {
+    data: Buffer;
+    contentType: string;
+  };
   email: string;
   userName: string;
   firstName: string;
@@ -29,6 +33,10 @@ interface IUser {
 }
 
 interface UserDocument extends Document {
+  image: {
+    data: Buffer;
+    contentType: "image/jpeg";
+  };
   email: string;
   userName: string;
   firstName: string;
@@ -52,6 +60,14 @@ interface UserDocument extends Document {
 
 const UserSchema: Schema = new Schema(
   {
+    image: {
+      data: {
+        type: Buffer
+      },
+      contentType: {
+        type: String
+      }
+    },
     email: {
       type: String,
       required: true,
