@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "../services/db.service";
 import seedUsers from "./user.seeder";
 import seedJobBudgets from "./job.budget.seeder";
+import seedServices from "./service.seeder";
 
 dotenv.config();
 
@@ -15,6 +16,9 @@ connectDB()
 
     await seedJobBudgets();
     console.info("Job budgets seeded successfully.");
+
+    await seedServices();
+    console.info("Services seeded successfully.");
 
     process.exit();
   })
