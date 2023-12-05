@@ -1,6 +1,7 @@
 import express from "express";
 
 import authRoutes from "./auth.route";
+import userRoutes from "./user.route";
 import gameRoutes from "./game.route";
 import blogRoutes from "./blog.route";
 import jobSkillRoutes from "./job.skill.route";
@@ -19,6 +20,7 @@ const router = express.Router();
 
 router.use("/auth", authRoutes);
 
+router.use("/user", adminMiddleware, userRoutes);
 router.use("/game", adminMiddleware, gameRoutes);
 router.use("/blog", adminMiddleware, blogRoutes);
 

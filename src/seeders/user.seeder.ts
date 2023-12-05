@@ -17,7 +17,17 @@ export default async function seedUsers() {
       lastName: "Kneeshaw",
       password: hashSync("michael", salt),
       role: USER_ROLES.ADMIN,
-      status: USER_STATUS.ENABLED
+      status: USER_STATUS.ENABLED,
+      shipping: {
+        firstName: "test",
+        lastName: "test",
+        card: "test"
+      },
+      credit: {
+        firstName: "test",
+        lastName: "test",
+        card: "test"
+      }
     }
   ];
 

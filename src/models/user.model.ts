@@ -13,6 +13,18 @@ interface IUser {
   role: string;
   status: number;
 
+  shipping: {
+    firstName: string;
+    lastName: string;
+    card: string;
+  };
+
+  credit: {
+    firstName: string;
+    lastName: string;
+    card: string;
+  };
+
   comparePassword(password: string): boolean;
 }
 
@@ -24,6 +36,18 @@ interface UserDocument extends Document {
   password: string;
   role: string;
   status: number;
+
+  shipping: {
+    firstName: string;
+    lastName: string;
+    card: string;
+  };
+
+  credit: {
+    firstName: string;
+    lastName: string;
+    card: string;
+  };
 }
 
 const UserSchema: Schema = new Schema(
@@ -58,6 +82,36 @@ const UserSchema: Schema = new Schema(
     status: {
       type: Number,
       required: true
+    },
+
+    shipping: {
+      firstName: {
+        type: String,
+        required: true
+      },
+      lastName: {
+        type: String,
+        required: true
+      },
+      card: {
+        type: String,
+        required: true
+      }
+    },
+
+    credit: {
+      firstName: {
+        type: String,
+        required: true
+      },
+      lastName: {
+        type: String,
+        required: true
+      },
+      card: {
+        type: String,
+        required: true
+      }
     }
   },
   {
