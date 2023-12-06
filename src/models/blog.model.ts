@@ -1,31 +1,38 @@
 import { Document, model, Model, Schema } from "mongoose";
 
 interface IBlog {
-  _id: string;
-  img: string;
+  _id?: string;
+  image?: {
+    data: Buffer;
+    contentType: string;
+  };
   title: string;
   description: string;
 }
 
 interface BlogDocument extends Document {
   _id: string;
-  img: string;
+  image: {
+    data: Buffer;
+    contentType: string;
+  };
   title: string;
   description: string;
 }
 
-const blogSchema: Schema = new Schema(
+const BlogSchema: Schema = new Schema(
   {
-    img: {
-      type: String,
-      required: true
+    image: {
+      data: {
+        type: Buffer
+      },
+      contentType: {
+        type: String
+      }
     },
     title: {
       type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true
+      required: true
     },
     description: {
       type: String,
@@ -38,6 +45,6 @@ const blogSchema: Schema = new Schema(
   }
 );
 
-const Blog: Model<BlogDocument> = model<BlogDocument>("Blog", blogSchema);
+const Blog: Model<BlogDocument> = model<BlogDocument>("Blog", BlogSchema);
 
 export { IBlog, BlogDocument, Blog };
