@@ -5,6 +5,7 @@ import seedUsers from "./user.seeder";
 import seedJobBudgets from "./job.budget.seeder";
 import seedServices from "./service.seeder";
 import seedBlogs from "./blog.seeder";
+import seedGames from "./game.seeder";
 
 dotenv.config();
 
@@ -23,6 +24,9 @@ connectDB()
 
     await seedBlogs();
     console.info("Blogs seeded successfully.");
+
+    await seedGames();
+    console.info("Games seeded successfully.");
 
     process.exit();
   })

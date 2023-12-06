@@ -1,35 +1,36 @@
 import { Document, model, Model, Schema } from "mongoose";
 
 interface IGame {
-  _id: string;
-  img: string;
+  _id?: string;
+  image?: {
+    data: Buffer;
+    contentType: string;
+  };
   title: string;
-  description: string;
   price: number;
 }
 
 interface GameDocument extends Document {
   _id: string;
-  img: string;
+  image: {
+    data: Buffer;
+    contentType: string;
+  };
   title: string;
-  description: string;
   price: number;
 }
 
 const gameSchema: Schema = new Schema(
   {
-    img: {
-      type: String,
-      required: true
+    image: {
+      data: {
+        type: Buffer
+      },
+      contentType: {
+        type: String
+      }
     },
     title: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true
-    },
-    description: {
       type: String,
       required: true
     },

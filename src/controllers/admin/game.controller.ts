@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { readFileSync } from "fs";
 import httpStatus from "http-status";
 
-import { Game } from "../../models/game.model";
+import { IGame, Game } from "../../models/game.model";
+import upload from "../../services/upload.service";
 
 /**
  * create a game
@@ -12,24 +14,33 @@ import { Game } from "../../models/game.model";
  * @returns
  */
 async function createGame(req: Request, res: Response, _next: NextFunction) {
-  const { img, title, description, price } = req.body;
+  upload("game").single("image")(req, res, async function error(err) {
+    if (err) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while uploading image."
+      });
+    }
+    const { title, price } = req.body;
 
-  if (!img || !title || !description || !price) {
-    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The img, title, description and price fields are required."
-    });
-  }
+    if (!title || !price) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message: "The title and price fields are required."
+      });
+    }
 
-  const game = {
-    img,
-    title,
-    description,
-    price
-  };
+    const game = {
+      image: {
+        data: readFileSync(req.file?.path ?? ""),
+        contentType: req.file?.mimetype
+      },
+      title,
+      price
+    };
 
-  const gameCreated = await Game.create(game);
+    const gameCreated = await Game.create(game);
 
-  return res.status(httpStatus.CREATED).json({ data: gameCreated });
+    return res.status(httpStatus.CREATED).json({ data: gameCreated });
+  });
 }
 
 /**
@@ -77,33 +88,43 @@ async function getGame(req: Request, res: Response, _next: NextFunction) {
  * @returns
  */
 async function updateGame(req: Request, res: Response, _next: NextFunction) {
-  const { id } = req.params;
-  const { img, title, description, price } = req.body;
+  upload("game").single("image")(req, res, async function error(err) {
+    if (err) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while uploading image."
+      });
+    }
 
-  const game = await Game.findOne({ _id: id });
+    const { id } = req.params;
+    const { title, price } = req.body;
 
-  if (!game) {
-    return res
-      .status(httpStatus.NOT_FOUND)
-      .json({ message: `Game with id "${id}" not found.` });
-  }
+    if (!title || !price) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message: "The title and price fields are required"
+      });
+    }
 
-  if (!img || !title || !description || !price) {
-    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The image, title, description and price fields are required"
-    });
-  }
+    let game: IGame = {
+      title,
+      price
+    };
 
-  await Game.updateOne({ _id: id }, { img, title, description, price });
+    if (req.file) {
+      game = {
+        ...game,
+        image: {
+          data: readFileSync(req.file?.path ?? ""),
+          contentType: req.file?.mimetype
+        }
+      };
+    }
 
-  const gameUpdated = await Game.findById(id, {
-    img,
-    title,
-    description,
-    price
+    await Game.updateOne({ _id: id }, game);
+
+    const gameUpdated = await Game.findById(id);
+
+    return res.status(httpStatus.OK).json({ data: gameUpdated });
   });
-
-  return res.status(httpStatus.OK).json({ data: gameUpdated });
 }
 
 /**
