@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { readFileSync } from "fs";
 import httpStatus from "http-status";
 
-import { Blog } from "../../models/blog.model";
+import { IBlog, Blog } from "../../models/blog.model";
+import upload from "../../services/upload.service";
 
 /**
  * create a blog
@@ -12,23 +14,33 @@ import { Blog } from "../../models/blog.model";
  * @returns
  */
 async function createBlog(req: Request, res: Response, _next: NextFunction) {
-  const { img, title, description } = req.body;
+  upload("blog").single("image")(req, res, async function error(err) {
+    if (err) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while uploading image."
+      });
+    }
+    const { title, description } = req.body;
 
-  if (!img || !title || !description) {
-    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The img, title and description fields are required."
-    });
-  }
+    if (!title || !description) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message: "The title and description fields are required."
+      });
+    }
 
-  const blog = {
-    img,
-    title,
-    description
-  };
+    const blog = {
+      image: {
+        data: readFileSync(req.file?.path ?? ""),
+        contentType: req.file?.mimetype
+      },
+      title,
+      description
+    };
 
-  const blogCreated = await Blog.create(blog);
+    const blogCreated = await Blog.create(blog);
 
-  return res.status(httpStatus.CREATED).json({ data: blogCreated });
+    return res.status(httpStatus.CREATED).json({ data: blogCreated });
+  });
 }
 
 /**
@@ -76,32 +88,43 @@ async function getBlog(req: Request, res: Response, _next: NextFunction) {
  * @returns
  */
 async function updateBlog(req: Request, res: Response, _next: NextFunction) {
-  const { id } = req.params;
-  const { img, title, description } = req.body;
+  upload("blog").single("image")(req, res, async function error(err) {
+    if (err) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+        message: "Something went wrong while uploading image."
+      });
+    }
 
-  const blog = await Blog.findOne({ _id: id });
+    const { id } = req.params;
+    const { title, description } = req.body;
 
-  if (!blog) {
-    return res
-      .status(httpStatus.NOT_FOUND)
-      .json({ message: `Blog with id "${id}" not found.` });
-  }
+    if (!title || !description) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message: "The title and description fields are required"
+      });
+    }
 
-  if (!img || !title || !description) {
-    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-      message: "The image, title and description fields are required"
-    });
-  }
+    let blog: IBlog = {
+      title,
+      description
+    };
 
-  await Blog.updateOne({ _id: id }, { img, title, description });
+    if (req.file) {
+      blog = {
+        ...blog,
+        image: {
+          data: readFileSync(req.file?.path ?? ""),
+          contentType: req.file?.mimetype
+        }
+      };
+    }
 
-  const blogUpdated = await Blog.findById(id, {
-    img,
-    title,
-    description
+    await Blog.updateOne({ _id: id }, blog);
+
+    const blogUpdated = await Blog.findById(id);
+
+    return res.status(httpStatus.OK).json({ data: blogUpdated });
   });
-
-  return res.status(httpStatus.OK).json({ data: blogUpdated });
 }
 
 /**
